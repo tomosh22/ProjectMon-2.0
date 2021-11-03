@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public List<GameObject> wildPokemon;
     public GameObject encounterPokemon;
+    public GameObject playerBattlePrefab;
     public List<Pokemon> playerPokemon;
     public Vector3 overworldPos;
     public Quaternion overworldRotation;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     public Canvas canvas;
     public GameObject inventoryEntryPrefab;
     public GameObject encounterChoicePrefab;
+    public int playerChosenPokemonIndex;
     public enum GameState {
         Overworld, Wild, Battle
     }
@@ -77,7 +79,6 @@ public class GameManager : MonoBehaviour
                 rt.localPosition = new Vector3(x * (Screen.width / 6), 0, 0);
                 entry.transform.Find("Name").GetComponent<TMP_Text>().text = playerPokemon[x].name;
                 entry.transform.Find("Level").GetComponent<TMP_Text>().text = "Level: " + playerPokemon[x].level;
-                Debug.Log(playerPokemon[x].name + playerPokemon[x].level);
             }
             else {
                 return;
@@ -144,24 +145,28 @@ public class GameManager : MonoBehaviour
         ui.transform.parent = canvas.transform;
         ui.transform.Find("Catch").GetComponent<Button>().onClick.AddListener(() => LoadCatch(pokemon));
         ui.transform.Find("Battle").GetComponent<Button>().onClick.AddListener(() => LoadBattle(pokemon));
-        //for (int x = 0; x < 6; x++)
-        //{
-        //    if (x < playerPokemon.Count)
-        //    {
-        //        Transform button = ui.transform.Find("Button" + x.ToString());
-        //        button.GetComponentInChildren<TMP_Text>().text = playerPokemon[x].name;
-        //        GameObject instance;
-        //        Pokemon.BattlePrefabs.TryGetValue(playerPokemon[x].name, out instance);
-        //        //TODO handle setting level
-        //        button.GetComponent<Button>().onClick.AddListener(()=> encounterPokemon = instance);
-        //    }
-        //    else
-        //    {
-        //        return;
-        //    }
+        for (int x = 0; x < 6; x++)
+        {
+            if (x < playerPokemon.Count)
+            {
+                Transform button = ui.transform.Find("Button" + (x).ToString());
+                button.Find("Text (TMP)").GetComponent<TMP_Text>().text = playerPokemon[x].name + x.ToString();
+                //TODO handle setting level
+                Debug.Log(playerPokemon[x].name);
+                button.GetComponent<Button>().onClick.AddListener(() => Debug.Log(x-1));
+                button.GetComponent<Button>().onClick.AddListener(() => playerChosenPokemonIndex = x-1);
+                Debug.Log("player chosen index: " + playerChosenPokemonIndex.ToString());
+                
+            }
+            else
+            {
+                return;
+            }
 
-        //}
+        }
     }
+
+    
     private void LoadCatch(GameObject pokemon) {
         Pokemon.CatchingPrefabs.TryGetValue(pokemon.GetComponent<PokemonMove>().pokemonName, out encounterPokemon);
         gameState = GameState.Wild;
@@ -169,9 +174,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void LoadBattle(GameObject pokemon)
+    private void LoadBattle(GameObject enemyPokemon)
     {
-        Pokemon.BattlePrefabs.TryGetValue(pokemon.GetComponent<PokemonMove>().pokemonName, out encounterPokemon);
+        Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.GetComponent<PokemonMove>().pokemonName, out encounterPokemon);
         gameState = GameState.Battle;
         SceneManager.LoadScene("Battle", LoadSceneMode.Single);
         Time.timeScale = 1;

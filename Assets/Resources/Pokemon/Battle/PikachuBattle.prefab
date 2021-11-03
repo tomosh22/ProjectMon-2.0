@@ -1255,7 +1255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agent: {fileID: 0}
   volumes: []
-  pokemonName: 
+  pokemonName: Pikachu
   isPlayer: 0
 --- !u!1 &7119873218510407590
 GameObject:

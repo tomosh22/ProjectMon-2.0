@@ -16,7 +16,6 @@ public class HealthBar : MonoBehaviour
         rt = GetComponent<RectTransform>();
         cam = Camera.main;
         slider = GetComponent<Slider>();
-        pokemon = gameObject.GetComponent<BattleController>().pokemon;
     }
 
     // Update is called once per frame

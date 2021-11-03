@@ -10,10 +10,10 @@ public class Battle : MonoBehaviour
     GameManager gm;
     public Vector3 playerSpawnPos;
     public Vector3 enemySpawnPos;
-    public Pokemon playerPokemon;
     public Pokemon enemyPokemon;
     public GameObject player;
     public GameObject enemy;
+    public Pokemon playerPokemon;
     GameObject playerHealthBar;
     GameObject enemyHealthBar;
     [SerializeField]
@@ -22,24 +22,35 @@ public class Battle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cam = Camera.main;
         gm = FindObjectOfType<GameManager>();
+        playerPokemon = gm.playerPokemon[gm.playerChosenPokemonIndex];
+        enemy = gm.encounterPokemon;
+        cam = Camera.main;
+        
         enemySpawnPos = new Vector3(16, 1, 13);
         playerSpawnPos = new Vector3(7, 1, 5);
-        enemyPokemon = new Pikachu();
+        Debug.Log("pokemon name: " + enemy.GetComponent<PokemonMove>().pokemonName);
+        //TODO implement level
+        enemyPokemon = Pokemon.InstanceCreators[enemy.GetComponent<PokemonMove>().pokemonName]();
         GameObject gameObject;
         Canvas canvas = FindObjectOfType<Canvas>();
 
-        Pokemon.BattlePrefabs.TryGetValue(playerPokemon.name, out gameObject);
-        player = Instantiate(gameObject, playerSpawnPos, Quaternion.Euler(0,45,0));
+
+        
+        player = Instantiate(Pokemon.BattlePrefabs[playerPokemon.name], playerSpawnPos, Quaternion.Euler(0,45,0));
         BattleController playerController = player.GetComponent<BattleController>();
         playerController.isPlayer = true;
         player.GetComponent<NavMeshAgent>().speed = playerPokemon.moveSpeed;
         player.GetComponent<BattleController>().pokemon = playerPokemon;
+        player.GetComponent<PokemonMove>().pokemon = playerPokemon;
         player.GetComponent<PokemonMove>().isPlayer = true;
 
-        Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.name, out gameObject);
-        enemy = Instantiate(gameObject, enemySpawnPos, Quaternion.Euler(0,-120,0));
+        //Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.name, out gameObject);
+        //enemy = Instantiate(gameObject, enemySpawnPos, Quaternion.Euler(0,-120,0));
+        //Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.name, out gameObject);
+
+        
+        enemy = Instantiate(enemy, enemySpawnPos, Quaternion.Euler(0, -120, 0));
         enemy.GetComponent<BattleController>().pokemon = enemyPokemon;
         enemy.GetComponent<PokemonMove>().pokemon = enemyPokemon;
         enemy.GetComponent<PokemonMove>().isPlayer = false;
