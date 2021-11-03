@@ -44,18 +44,24 @@ public class Battle : MonoBehaviour
         player.GetComponent<BattleController>().pokemon = playerPokemon;
         player.GetComponent<PokemonMove>().pokemon = playerPokemon;
         player.GetComponent<PokemonMove>().isPlayer = true;
+        playerHealthBar = Instantiate(healthBar, cam.WorldToScreenPoint(playerSpawnPos), Quaternion.identity);
+        playerHealthBar.transform.parent = canvas.transform;
+        playerHealthBar.GetComponent<HealthBar>().toFollow = player;
+        playerHealthBar.GetComponent<HealthBar>().pokemon = playerPokemon;
+        playerHealthBar.GetComponent<Slider>().maxValue = playerPokemon.hp;
+        playerHealthBar.GetComponent<Slider>().value = playerPokemon.hp;
 
         //Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.name, out gameObject);
         //enemy = Instantiate(gameObject, enemySpawnPos, Quaternion.Euler(0,-120,0));
         //Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.name, out gameObject);
 
-        
+
         enemy = Instantiate(enemy, enemySpawnPos, Quaternion.Euler(0, -120, 0));
         enemy.GetComponent<BattleController>().pokemon = enemyPokemon;
         enemy.GetComponent<PokemonMove>().pokemon = enemyPokemon;
         enemy.GetComponent<PokemonMove>().isPlayer = false;
         enemyHealthBar = Instantiate(healthBar, cam.WorldToScreenPoint(enemySpawnPos), Quaternion.identity);
-        enemyHealthBar.transform.parent = FindObjectOfType<Canvas>().transform;
+        enemyHealthBar.transform.parent = canvas.transform;
         enemyHealthBar.GetComponent<HealthBar>().toFollow = enemy;
         enemyHealthBar.GetComponent<HealthBar>().pokemon = enemyPokemon;
         enemyHealthBar.GetComponent<Slider>().maxValue = enemyPokemon.hp;
