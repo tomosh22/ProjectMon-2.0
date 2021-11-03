@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HealthBar : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class HealthBar : MonoBehaviour
         rt = GetComponent<RectTransform>();
         cam = Camera.main;
         slider = GetComponent<Slider>();
+        transform.Find("Level").Find("Text (TMP)").GetComponent<TMP_Text>().text = pokemon.level.ToString();
     }
 
     // Update is called once per frame
