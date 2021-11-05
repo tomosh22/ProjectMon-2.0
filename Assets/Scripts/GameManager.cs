@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
         canvas = FindObjectOfType<Canvas>();
         playerPokemon = new List<Pokemon>();
         playerPokemon.Add(new Pikachu());
+        playerPokemon.Add(new Pikachu());
+        playerPokemon.Add(new Pikachu());
         overworldScenes = new List<string>() {"InitialScene", "Town0"};
 
         //GameObject test;
@@ -147,16 +149,15 @@ public class GameManager : MonoBehaviour
         ui.transform.Find("Battle").GetComponent<Button>().onClick.AddListener(() => LoadBattle(pokemon));
         for (int x = 0; x < 6; x++)
         {
-            if (x < playerPokemon.Count)
+            int temp = x;
+            if (temp < playerPokemon.Count)
             {
-                Transform button = ui.transform.Find("Button" + (x).ToString());
-                button.Find("Text (TMP)").GetComponent<TMP_Text>().text = playerPokemon[x].name + x.ToString();
+                Transform button = ui.transform.Find("Button" + (temp).ToString());
+                button.Find("Text (TMP)").GetComponent<TMP_Text>().text = temp.ToString() + " " + playerPokemon[temp].name;
                 //TODO handle setting level
-                Debug.Log(playerPokemon[x].name);
-                button.GetComponent<Button>().onClick.AddListener(() => Debug.Log(x-1));
-                button.GetComponent<Button>().onClick.AddListener(() => playerChosenPokemonIndex = x-1);
-                Debug.Log("player chosen index: " + playerChosenPokemonIndex.ToString());
-                
+                Debug.Log("temp: " + temp.ToString());
+                button.GetComponent<Button>().onClick.AddListener(() => playerChosenPokemonIndex = temp);
+                button.GetComponent<Button>().onClick.AddListener(() => Debug.Log("index is: " + playerChosenPokemonIndex.ToString()));
             }
             else
             {

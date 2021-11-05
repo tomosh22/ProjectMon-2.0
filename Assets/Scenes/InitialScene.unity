@@ -4258,6 +4258,7 @@ MonoBehaviour:
   player: {fileID: 0}
   wildPokemon: []
   encounterPokemon: {fileID: 0}
+  playerBattlePrefab: {fileID: 0}
   overworldPos: {x: 0, y: 0, z: 0}
   overworldRotation: {x: 0, y: 0, z: 0, w: 0}
   overworldSceneName: 
@@ -4265,6 +4266,7 @@ MonoBehaviour:
   canvas: {fileID: 0}
   inventoryEntryPrefab: {fileID: 5505823583527410767, guid: d239c74fd21902249a299b453023b20d, type: 3}
   encounterChoicePrefab: {fileID: 9176117662251675809, guid: 6324369e4c674f14a81808dfefbc99a8, type: 3}
+  playerChosenPokemonIndex: 0
   gameState: 0
 --- !u!4 &2145850664
 Transform:
@@ -4287,6 +4289,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 668154331804374049, guid: 8ab1f8ff0f20ec4449088c0b92d3d938, type: 3}
+      propertyPath: isPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 668154332504412039, guid: 8ab1f8ff0f20ec4449088c0b92d3d938, type: 3}
       propertyPath: m_Name
       value: Player
