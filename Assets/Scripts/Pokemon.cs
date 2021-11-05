@@ -52,6 +52,10 @@ public abstract class Pokemon
         this.level += 1;
     }
 
+    public void SetLevel(int level) {
+        this.level = level;
+    }
+
     public struct Attack {
         public int damage;
         public float accuracy;
