@@ -17,6 +17,7 @@ public abstract class Pokemon
     public int level;
     public int xp;
     public int hp;
+    public int baseHp;
     public float[] cooldowns;
     public float[] timeRemaining;
     public static Dictionary<string,Attack> Attacks = new Dictionary<string, Attack>() {
@@ -50,6 +51,7 @@ public abstract class Pokemon
     public void LevelUp() {
         Debug.Log("levelling up " + this.name);
         this.level += 1;
+        this.hp = this.baseHp * this.level;
     }
 
     public void SetLevel(int level) {
@@ -75,6 +77,7 @@ public abstract class Pokemon
 public struct AbilityData {
     public Camera cam;
     public GameObject player;
+    public Pokemon playerPokemon;
 }
 
 public class Pikachu : Pokemon {
@@ -87,7 +90,8 @@ public class Pikachu : Pokemon {
         this.name = "Pikachu";
         this.type = Type.Electric;
         this.moveSpeed = 6f;
-        this.hp = 100;
+        this.hp = 10;
+        this.baseHp = 10;
         this.cooldowns = new float[4]{2f,3f,0f,0f};
         this.timeRemaining = new float[4] { 0, 0, 0, 0 };
     }
@@ -99,7 +103,8 @@ public class Pikachu : Pokemon {
         Vector3 hitPoint = hit.point;
         hitPoint.y = data.player.transform.position.y;
         data.player.transform.LookAt(hitPoint);
-        UnityEngine.Object.Instantiate(Resources.Load("Abilities/Pikachu/PikachuQ"), data.player.transform.position + data.player.transform.forward, data.player.transform.rotation);
+        GameObject q = UnityEngine.Object.Instantiate(Resources.Load("Abilities/Pikachu/PikachuQ"), data.player.transform.position + data.player.transform.forward, data.player.transform.rotation) as GameObject;
+        q.GetComponent<PikachuQ>().level = data.playerPokemon.level;
         
     }
     public override void W(AbilityData data)

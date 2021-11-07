@@ -49,6 +49,7 @@ public class BattleController : MonoBehaviour
             AbilityData data = new AbilityData();
             data.cam = cam;
             data.player = gameObject;
+            data.playerPokemon = pokemon;
             pokemon.Q(data);
             pokemon.timeRemaining[0] = pokemon.cooldowns[0];
         }

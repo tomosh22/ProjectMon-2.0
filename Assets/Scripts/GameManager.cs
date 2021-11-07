@@ -168,14 +168,14 @@ public class GameManager : MonoBehaviour
     }
 
     
-    private void LoadCatch(GameObject pokemon) {
+    public void LoadCatch(GameObject pokemon) {
         Pokemon.CatchingPrefabs.TryGetValue(pokemon.GetComponent<PokemonMove>().pokemonName, out encounterPokemon);
         gameState = GameState.Wild;
         SceneManager.LoadScene("Catching", LoadSceneMode.Single);
         Time.timeScale = 1;
     }
 
-    private void LoadBattle(GameObject enemyPokemon)
+    public void LoadBattle(GameObject enemyPokemon)
     {
         Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.GetComponent<PokemonMove>().pokemonName, out encounterPokemon);
         gameState = GameState.Battle;
@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void PrepareToExitOverworld() {
+    public void PrepareToExitOverworld() {
         overworldPos = player.transform.position;
         overworldRotation = player.transform.rotation;
         overworldSceneName = SceneManager.GetActiveScene().name;

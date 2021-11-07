@@ -7,6 +7,7 @@ public class PikachuQ : MonoBehaviour
     public Vector3 velocity;
     public float lifeTime;
     public float startTime;
+    public int level;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,14 +30,14 @@ public class PikachuQ : MonoBehaviour
         if (other.gameObject.CompareTag("PikachuW"))
         {
             Pokemon target = other.gameObject.GetComponent<PikachuW>().markedPokemon;
-            target.hp -= 20;
+            target.hp -= 2 * level;
             Debug.Log("dealt extra dmg, hp now " + target.hp);
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("Pokemon")) {
             if (!other.gameObject.GetComponent<BattleController>().isPlayer)
             {
-                other.gameObject.GetComponent<BattleController>().pokemon.hp -= 10;
+                other.gameObject.GetComponent<BattleController>().pokemon.hp -= level;
                 Destroy(gameObject);
             }
         }
