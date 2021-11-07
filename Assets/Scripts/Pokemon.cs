@@ -56,6 +56,7 @@ public abstract class Pokemon
 
     public void SetLevel(int level) {
         this.level = level;
+        this.hp = this.baseHp * level;
     }
 
     public struct Attack {
