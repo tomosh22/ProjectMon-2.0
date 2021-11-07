@@ -14,6 +14,7 @@ public class PokemonMove : MonoBehaviour
     private GameManager gm;
     private GameManager.GameState gameState;
     public bool isPlayer;
+    public int level;
     // Start is called before the first frame update
     void Start()
     {

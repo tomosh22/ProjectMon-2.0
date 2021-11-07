@@ -40,6 +40,7 @@ public class PokemonSpawner : MonoBehaviour
                 {
                     GameObject spawnedPokemon = Instantiate(spawn.wildPrefab, hit.position, Quaternion.identity);
                     spawnedPokemon.transform.parent = gameObject.transform;
+                    spawnedPokemon.GetComponent<PokemonMove>().level = Random.Range(spawn.minLevel, spawn.maxLevel + 1);
                     gm.wildPokemon.Add(spawnedPokemon);
                 }
                 

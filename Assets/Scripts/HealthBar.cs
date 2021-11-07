@@ -11,12 +11,14 @@ public class HealthBar : MonoBehaviour
     public GameObject toFollow;
     public Pokemon pokemon;
     Slider slider;
+    TMP_Text text;
     // Start is called before the first frame update
     void Start()
     {
         rt = GetComponent<RectTransform>();
         cam = Camera.main;
         slider = GetComponent<Slider>();
+        text = transform.Find("Current").GetComponent<TMP_Text>();
         transform.Find("Level").Find("Text (TMP)").GetComponent<TMP_Text>().text = pokemon.level.ToString();
     }
 
@@ -25,5 +27,6 @@ public class HealthBar : MonoBehaviour
     {
         rt.position = cam.WorldToScreenPoint(toFollow.transform.position) + Vector3.up * 50;
         slider.value = pokemon.hp;
+        text.text = pokemon.hp.ToString();
     }
 }

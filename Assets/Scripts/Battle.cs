@@ -29,9 +29,10 @@ public class Battle : MonoBehaviour
         
         enemySpawnPos = new Vector3(16, 1, 13);
         playerSpawnPos = new Vector3(7, 1, 5);
-        Debug.Log("pokemon name: " + enemy.GetComponent<PokemonMove>().pokemonName);
+        //Debug.Log("pokemon name: " + enemy.GetComponent<PokemonMove>().pokemonName);
         //TODO implement level
         enemyPokemon = Pokemon.InstanceCreators[enemy.GetComponent<PokemonMove>().pokemonName]();
+        enemyPokemon.SetLevel(gm.encounterPokemonLevel);
         GameObject gameObject;
         Canvas canvas = FindObjectOfType<Canvas>();
 
@@ -66,13 +67,16 @@ public class Battle : MonoBehaviour
         enemyHealthBar.GetComponent<HealthBar>().pokemon = enemyPokemon;
         enemyHealthBar.GetComponent<Slider>().maxValue = enemyPokemon.hp;
         enemyHealthBar.GetComponent<Slider>().value = enemyPokemon.hp;
+        //Debug.Log("enemy hp: " + enemyPokemon.hp.ToString());
+        Debug.Log("enemy lvl: " + enemyPokemon.level.ToString());
+        Debug.Log("encounterLevel: " + gm.encounterPokemonLevel.ToString());
     }
 
     // Update is called once per frame
     void Update()
     {
         if (enemyPokemon.hp <= 0) {
-            playerPokemon.LevelUp();
+            playerPokemon.SetLevel(playerPokemon.level + gm.xpModifier);
             gm.gameState = GameManager.GameState.Overworld;
             SceneManager.LoadScene(gm.overworldSceneName);
         }

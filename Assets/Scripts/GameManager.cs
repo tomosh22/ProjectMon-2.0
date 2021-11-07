@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public List<GameObject> wildPokemon;
     public GameObject encounterPokemon;
+    public int encounterPokemonLevel;
     public GameObject playerBattlePrefab;
     public List<Pokemon> playerPokemon;
     public Vector3 overworldPos;
@@ -21,6 +23,11 @@ public class GameManager : MonoBehaviour
     public GameObject inventoryEntryPrefab;
     public GameObject encounterChoicePrefab;
     public int playerChosenPokemonIndex;
+    public int xpModifier;
+
+    public enum Difficulty { 
+        Easy, Hard
+    }
     public enum GameState {
         Overworld, Wild, Battle
     }
@@ -125,12 +132,18 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        foreach (GameObject pokemon in wildPokemon) {
-            if (Vector3.Distance(pokemon.transform.position, player.transform.position) < 2f) {
+        foreach (GameObject pokemonObject in wildPokemon) {
+            if (Vector3.Distance(pokemonObject.transform.position, player.transform.position) < 2f) {
 
                 //remember player location/rotation + scene name and remove all wild pokemon
                 PrepareToExitOverworld();
-                CreateEncounterChoiceUI(pokemon);
+                Func<Pokemon> pokemonCreator;
+                Debug.Log("line 135: " + pokemonObject.GetComponent<PokemonMove>().pokemonName);
+                Pokemon.InstanceCreators.TryGetValue(pokemonObject.GetComponent<PokemonMove>().pokemonName,out pokemonCreator);
+                Debug.Log(pokemonCreator);
+                Pokemon tempPokemon = pokemonCreator();
+                tempPokemon.SetLevel(pokemonObject.GetComponent<PokemonMove>().level);
+                CreateEncounterChoiceUI(tempPokemon);
                 Time.timeScale = 0;
                 //load catch scene for pokemon
                 //LoadCatch(pokemon);
@@ -140,13 +153,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void CreateEncounterChoiceUI(GameObject pokemon) {
+    void CreateEncounterChoiceUI(Pokemon pokemon) {
         GameObject ui = Instantiate(encounterChoicePrefab, Vector3.zero, Quaternion.identity);
         RectTransform rt = ui.GetComponent<RectTransform>();
         rt.localPosition = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         ui.transform.parent = canvas.transform;
-        ui.transform.Find("Catch").GetComponent<Button>().onClick.AddListener(() => LoadCatch(pokemon));
+        GameObject catchPrefab;
+        Pokemon.CatchingPrefabs.TryGetValue(pokemon.name, out catchPrefab);
+        xpModifier = 1;
+        ui.transform.Find("Catch").GetComponent<Button>().onClick.AddListener(() => LoadCatch(catchPrefab));
         ui.transform.Find("Battle").GetComponent<Button>().onClick.AddListener(() => LoadBattle(pokemon));
+        ui.transform.Find("Easy").GetComponent<Button>().onClick.AddListener(() => xpModifier = 1);
+        ui.transform.Find("Hard").GetComponent<Button>().onClick.AddListener(() => xpModifier = 2);
         for (int x = 0; x < 6; x++)
         {
             int temp = x;
@@ -175,9 +193,10 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void LoadBattle(GameObject enemyPokemon)
+    public void LoadBattle(Pokemon enemyPokemon)
     {
-        Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.GetComponent<PokemonMove>().pokemonName, out encounterPokemon);
+        Pokemon.BattlePrefabs.TryGetValue(enemyPokemon.name, out encounterPokemon);
+        encounterPokemonLevel = enemyPokemon.level;
         gameState = GameState.Battle;
         SceneManager.LoadScene("Battle", LoadSceneMode.Single);
         Time.timeScale = 1;
