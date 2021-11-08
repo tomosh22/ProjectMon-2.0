@@ -8,6 +8,7 @@ public class PikachuQ : MonoBehaviour
     public float lifeTime;
     public float startTime;
     public int level;
+    public GameObject caster;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +36,7 @@ public class PikachuQ : MonoBehaviour
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("Pokemon")) {
-            if (!other.gameObject.GetComponent<BattleController>().isPlayer)
+            if (other.gameObject != caster)
             {
                 other.gameObject.GetComponent<BattleController>().pokemon.hp -= level;
                 Destroy(gameObject);

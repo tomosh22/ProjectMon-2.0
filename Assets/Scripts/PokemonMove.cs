@@ -59,14 +59,17 @@ public class PokemonMove : MonoBehaviour
     }
 
     void BattleUpdate() {
-        if (agent.remainingDistance < 0.1f)
-        {
-            Vector2 randomDir = Random.insideUnitCircle * 5;
-            Vector3 samplePos = new Vector3((transform.position.x + randomDir.x), transform.position.y, (transform.position.z + randomDir.y));
-            NavMeshHit hit;
-            NavMesh.SamplePosition(samplePos, out hit, 5, 1);
-            agent.destination = hit.position;
+        if (gm.xpModifier == 1) {
+            //easy mode
+            if (agent.remainingDistance < 0.1f)
+            {
+                Vector2 randomDir = Random.insideUnitCircle * 5;
+                Vector3 samplePos = new Vector3((transform.position.x + randomDir.x), transform.position.y, (transform.position.z + randomDir.y));
+                NavMeshHit hit;
+                NavMesh.SamplePosition(samplePos, out hit, 5, 1);
+                agent.destination = hit.position;
 
+            }
         }
     }
 

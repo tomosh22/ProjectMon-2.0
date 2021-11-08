@@ -9,7 +9,7 @@ public class PikachuW : MonoBehaviour
     public float startTime;
     public bool isAttached;
     public Pokemon markedPokemon;
-    public GameObject player;
+    public GameObject caster;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +36,7 @@ public class PikachuW : MonoBehaviour
     {
        
         if (other.gameObject.CompareTag("Pokemon")) {
-            if (!other.gameObject.GetComponent<BattleController>().isPlayer) {
+            if (other.gameObject != caster) {
                 lifeTime = 5f;
                 startTime = Time.time;
                 gameObject.transform.position = other.gameObject.transform.position;
