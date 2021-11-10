@@ -34,6 +34,7 @@ public class PokemonSpawner : MonoBehaviour
             float spawnZ = Random.Range(transform.position.z + volume.center.z - volume.size.z / 2, transform.position.z + volume.center.z + volume.size.z / 2);
 
             NavMeshHit hit;
+            Debug.Log(new Vector3(spawnX, volume.center.y, spawnZ));
             NavMesh.SamplePosition(new Vector3(spawnX, volume.center.y, spawnZ), out hit, 5f,3);
             foreach (Spawn spawn in spawns) {
                 if(Random.Range(0f,1f) < spawn.chance)

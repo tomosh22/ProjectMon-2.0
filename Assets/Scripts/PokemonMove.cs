@@ -33,20 +33,20 @@ public class PokemonMove : MonoBehaviour
     // Update is called once per frame
     void OverworldUpdate()
     {
-        if (agent.remainingDistance < 0.5f)
+        if (agent.remainingDistance < 0.5f || agent.velocity.magnitude < 0.5f)
         {
-            NavMeshModifierVolume volume = volumes[Random.Range(0, volumes.Length - 1)];
-            float destX = Random.Range(transform.parent.transform.position.x - (volume.center.x - volume.size.x / 2), transform.parent.transform.position.x - (volume.center.x + volume.size.x / 2));
-            float destZ = Random.Range(transform.parent.transform.position.z - (volume.center.z - volume.size.z / 2), transform.parent.transform.position.z - (volume.center.z + volume.size.z / 2));
+            NavMeshModifierVolume volume = volumes[Random.Range(0, volumes.Length)];
+            float destX = Random.Range(transform.parent.transform.position.x + volume.center.x - volume.size.x / 2, transform.parent.transform.position.x + volume.center.x + volume.size.x / 2);
+            float destZ = Random.Range(transform.parent.transform.position.z + volume.center.z - volume.size.z / 2, transform.parent.transform.position.z + volume.center.z + volume.size.z / 2);
             NavMeshHit hit;
-            NavMesh.SamplePosition(new Vector3(destX, volume.transform.position.y, destZ), out hit, 5f, 3);
+            NavMesh.SamplePosition(new Vector3(destX, volume.transform.position.y, destZ), out hit, 3f, 3);
             agent.destination = hit.position;
         }
     }
 
     void WildUpdate()
     {
-        return;
+        
         if (agent.remainingDistance < 0.1f)
         {
             Vector2 randomDir = Random.insideUnitCircle * 5;
