@@ -17,7 +17,7 @@ public class PikachuBattle : MonoBehaviour
         Physics.Raycast(data.cam.ScreenPointToRay(Input.mousePosition), out hit);
         Vector3 hitPoint = hit.point;
         hitPoint.y = data.gameObject.transform.position.y;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.35f);
         data.agent.Warp(hitPoint);
         Instantiate(Resources.Load("Abilities/Pikachu/PikachuE"), hitPoint, data.gameObject.transform.rotation);
 

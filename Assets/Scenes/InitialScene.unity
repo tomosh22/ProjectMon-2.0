@@ -4258,6 +4258,7 @@ MonoBehaviour:
   player: {fileID: 0}
   wildPokemon: []
   encounterPokemon: {fileID: 0}
+  encounterPokemonLevel: 0
   playerBattlePrefab: {fileID: 0}
   overworldPos: {x: 0, y: 0, z: 0}
   overworldRotation: {x: 0, y: 0, z: 0, w: 0}
@@ -4267,6 +4268,9 @@ MonoBehaviour:
   inventoryEntryPrefab: {fileID: 5505823583527410767, guid: d239c74fd21902249a299b453023b20d, type: 3}
   encounterChoicePrefab: {fileID: 9176117662251675809, guid: 6324369e4c674f14a81808dfefbc99a8, type: 3}
   playerChosenPokemonIndex: 0
+  xpModifier: 0
+  currentTrainerID: 0
+  beatenTrainerIDs: 
   gameState: 0
 --- !u!4 &2145850664
 Transform:

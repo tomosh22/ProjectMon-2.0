@@ -15,7 +15,7 @@ public class PikachuW : MonoBehaviour
     {
         markedPokemon = null;
         lifeTime = 1.75f;
-        velocity = transform.forward * 4;
+        velocity = transform.forward * 8;
         startTime = Time.time;
     }
 
@@ -24,6 +24,12 @@ public class PikachuW : MonoBehaviour
     {
         if (Time.time - startTime > lifeTime)
         {
+
+            foreach (BattleController bc in FindObjectsOfType<BattleController>()) {
+                if (bc.isPlayer) {
+                    bc.tags.Remove(Pokemon.Tag.PikachuW);
+                }
+            }
             Destroy(gameObject);
         }
         if (markedPokemon == null)
@@ -43,6 +49,7 @@ public class PikachuW : MonoBehaviour
                 gameObject.transform.parent = other.gameObject.transform;
                 markedPokemon = other.gameObject.GetComponent<BattleController>().pokemon;
                 GetComponent<SphereCollider>().radius = 3;
+                other.gameObject.GetComponent<BattleController>().tags.Add(Pokemon.Tag.PikachuW);
             }
             
         }

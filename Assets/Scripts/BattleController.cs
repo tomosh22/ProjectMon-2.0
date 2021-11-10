@@ -12,9 +12,12 @@ public class BattleController : MonoBehaviour
     public GameManager gm;
     public GameObject enemyObject;
     public AbilityData data;
+    public bool paused;
+    public List<Pokemon.Tag> tags;
     // Start is called before the first frame update
     void Start()
     {
+        tags = new List<Pokemon.Tag>();
         cam = Camera.main;
         agent = GetComponent<NavMeshAgent>();
         gm = FindObjectOfType<GameManager>();
@@ -24,9 +27,11 @@ public class BattleController : MonoBehaviour
         data.currentPokemon = pokemon;
         data.isPlayer = isPlayer ? true : false;
         data.enemyObject = enemyObject;
+        data.agent = agent;
     }
     private void Update()
     {
+        if (paused) { return; }
         for (int x = 0; x < 4; x++)
         {
             if (pokemon.timeRemaining[x] > 0)

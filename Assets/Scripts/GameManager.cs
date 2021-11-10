@@ -24,7 +24,12 @@ public class GameManager : MonoBehaviour
     public GameObject encounterChoicePrefab;
     public int playerChosenPokemonIndex;
     public int xpModifier;
-
+    public int currentTrainerID;
+    public WinOrLose? battleResult;
+    public List<int> beatenTrainerIDs;
+    public enum WinOrLose { 
+        Win,Lose
+    }
     public enum Difficulty { 
         Easy, Hard
     }
@@ -35,12 +40,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        beatenTrainerIDs = new List<int>();
+        currentTrainerID = -1;
         player = FindObjectOfType<CharacterController>().gameObject;
         canvas = FindObjectOfType<Canvas>();
         playerPokemon = new List<Pokemon>();
         playerPokemon.Add(new Pikachu());
-        playerPokemon.Add(new Pikachu());
-        playerPokemon.Add(new Pikachu());
+        playerPokemon[0].SetLevel(9999);
         overworldScenes = new List<string>() {"InitialScene", "Town0"};
 
         //GameObject test;
@@ -54,26 +60,70 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         canvas = FindObjectOfType<Canvas>();
-        if (overworldScenes.Contains(scene.name)) {
+        if (overworldScenes.Contains(scene.name))
+        {
             //overworld was loaded
             Camera.main.GetComponent<CameraController>().isPlayer = true;
             CreateInventoryUI();
-            player = FindObjectOfType<CharacterController>().gameObject;
+            CharacterController cc = FindObjectOfType<CharacterController>();
+            player = cc.gameObject;
             if (overworldPos != Vector3.zero)
             {
-                //move player to location remembered in scene before other scene was loaded
-                player.transform.position = overworldPos;
-                player.transform.rotation = overworldRotation;
-                overworldPos = Vector3.zero;
                 
+                Debug.Log("pos data found: " + overworldPos.ToString());
+                //move player to location remembered in scene before other scene was loaded
+                cc.enabled = false;
+                player.transform.SetPositionAndRotation(overworldPos, overworldRotation);
+                cc.enabled = true;
+                overworldPos = Vector3.zero;
             }
-            return;
+            xpModifier = 1;
+            if (currentTrainerID != -1 && battleResult == WinOrLose.Win ) {
+                Trainer[] trainers = FindObjectsOfType<Trainer>();
+                Trainer currentTrainer = null;
+                foreach (Trainer trainer in trainers) {
+                    if (trainer.trainerID == currentTrainerID) {
+                        currentTrainer = trainer;
+                    }
+                }
+                if (currentTrainer == null) {
+                    Debug.LogError("couldnt find trainer that was just beaten");
+                }
+                beatenTrainerIDs.Add(currentTrainer.trainerID);
+                currentTrainerID = -1;
+            }
+            if (currentTrainerID != -1 && battleResult == WinOrLose.Lose) {
+                Trainer[] trainers = FindObjectsOfType<Trainer>();
+                Trainer currentTrainer = null;
+                foreach (Trainer trainer in trainers)
+                {
+                    if (trainer.trainerID == currentTrainerID)
+                    {
+                        currentTrainer = trainer;
+                    }
+                }
+                if (currentTrainer == null)
+                {
+                    Debug.LogError("couldnt find trainer that was just lost to");
+                }
+                currentTrainer.waitForHitboxExit = true;
+            }
         }
-        if (SceneManager.GetSceneByName("Catching") == scene)
+        else
         {
-            Camera.main.GetComponent<CameraController>().isPlayer = false;
-            GameObject.Find("CatchingManager").GetComponent<Catching>().pokemon = encounterPokemon;
-            return;
+            if (SceneManager.GetSceneByName("Catching") == scene)
+            {
+                Camera.main.GetComponent<CameraController>().isPlayer = false;
+                GameObject.Find("CatchingManager").GetComponent<Catching>().pokemon = encounterPokemon;
+
+            }
+        }
+        foreach (Pokemon pokemon in playerPokemon) {
+            //heal all players pokemon and rest cooldowns
+            pokemon.hp = pokemon.baseHp * pokemon.level;
+            for (int x = 0; x < 3; x++) {
+                pokemon.timeRemaining[x] = 0;
+            }
         }
         
     }
@@ -101,12 +151,13 @@ public class GameManager : MonoBehaviour
     static GameManager gm;
     private void Awake()
     {
-        DontDestroyOnLoad(this);
+        
         if (gm)
         {
             Destroy(gameObject);
         }
         else {
+            DontDestroyOnLoad(this);
             gm = this;
         }
     }
@@ -133,6 +184,7 @@ public class GameManager : MonoBehaviour
         }
         
         foreach (GameObject pokemonObject in wildPokemon) {
+            if (pokemonObject == null) { break; }
             if (Vector3.Distance(pokemonObject.transform.position, player.transform.position) < 2f) {
 
                 //remember player location/rotation + scene name and remove all wild pokemon

@@ -31,8 +31,5 @@ public class BallBehaviour : MonoBehaviour
             SceneManager.LoadScene(gm.overworldSceneName);
 
         }
-        else {
-            Destroy(gameObject);
-        }
     }
 }

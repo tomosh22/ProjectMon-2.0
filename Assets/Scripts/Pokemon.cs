@@ -39,6 +39,10 @@ public abstract class Pokemon
     public static Dictionary<string, Func<Pokemon>> InstanceCreators = new Dictionary<string, Func<Pokemon>>() {
         {"Pikachu", Pikachu.CreateInstance }
     };
+
+    public enum Tag { 
+        PikachuW
+    }
     public enum Type
     {
         Normal,Fighting,Flying,Poison, Ground,Rock,Bug,
@@ -100,7 +104,7 @@ public class Pikachu : Pokemon {
         this.moveSpeed = 6f;
         this.hp = 10;
         this.baseHp = 10;
-        this.cooldowns = new float[4] { 2f, 3f, 0f, 0f };
+        this.cooldowns = new float[4] { 2f, 3f, 4f, 0f };
         this.timeRemaining = new float[4] { 0, 0, 0, 0 };
     }
 
@@ -121,40 +125,65 @@ public class Pikachu : Pokemon {
         {Quadrant.bottomRight, new Vector3(15,0,4) }
 
     };
-    public override void BattleBehaviour(NavMeshAgent agent, GameObject enemyObject)
-    {
-        
+
+    public void RunFromPlayer(NavMeshAgent agent, GameObject enemyObject) {
         Quadrant quadrant;
         Vector3 enemyPos = enemyObject.transform.position;
-        
+
         if (enemyPos.x >= 11)
         {
             if (enemyPos.z >= 8)
             {
                 quadrant = Quadrant.topRight;
             }
-            else {
+            else
+            {
                 quadrant = Quadrant.bottomRight;
             }
         }
-        else {
+        else
+        {
             if (enemyPos.z >= 8)
             {
                 quadrant = Quadrant.topLeft;
             }
-            else {
+            else
+            {
                 quadrant = Quadrant.bottomLeft;
             }
         }
         Vector3 destination;
-        if (agent.remainingDistance < 0.1f) {
+        if (agent.remainingDistance < 0.1f)
+        {
             Vector2 offset = UnityEngine.Random.insideUnitCircle * 3;
             destination = QuadrantCenters[OppositeQuadrants[quadrant]] + new Vector3(offset.x, 0, offset.y);
             NavMeshHit hit;
             NavMesh.SamplePosition(destination, out hit, 3, 1);
             agent.destination = hit.position;
-            
+
         }
+    }
+    public override void BattleBehaviour(NavMeshAgent agent, GameObject enemyObject)
+    {
+        if (!enemyObject.GetComponent<BattleController>().tags.Contains(Tag.PikachuW))
+        {
+            RunFromPlayer(agent, enemyObject);
+            switch (timeRemaining[0] == 0, timeRemaining[1] == 0) {
+                case (true, true):
+                    //TODO ability data doesnt need to be created every frame, create function that creates it once and reference it here
+                    W(new AbilityData() { isPlayer = false, enemyObject = enemyObject, gameObject = agent.gameObject, currentPokemon = this });
+                    timeRemaining[1] = cooldowns[1];
+                    Q(new AbilityData() {isPlayer=false,enemyObject=enemyObject,gameObject=agent.gameObject,currentPokemon=this });
+                    timeRemaining[0] = cooldowns[0];
+                    
+                    break;
+            }
+        }
+        else {
+            agent.destination = enemyObject.transform.position;
+        }
+        
+        
     }
 
     public override void Q(AbilityData data)

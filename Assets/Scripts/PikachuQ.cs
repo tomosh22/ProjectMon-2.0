@@ -13,7 +13,7 @@ public class PikachuQ : MonoBehaviour
     void Start()
     {
         lifeTime = 0.75f;
-        velocity = transform.forward * 5;
+        velocity = transform.forward * 10;
         startTime = Time.time;
     }
 
@@ -33,7 +33,9 @@ public class PikachuQ : MonoBehaviour
             Pokemon target = other.gameObject.GetComponent<PikachuW>().markedPokemon;
             target.hp -= 2 * level;
             Debug.Log("dealt extra dmg, hp now " + target.hp);
+            other.gameObject.transform.parent.GetComponent<BattleController>().tags.Remove(Pokemon.Tag.PikachuW);
             Destroy(other.gameObject);
+            
         }
         if (other.gameObject.CompareTag("Pokemon")) {
             if (other.gameObject != caster)

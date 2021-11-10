@@ -921,11 +921,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSpawnPos: {x: 0, y: 0, z: 0}
   enemySpawnPos: {x: 0, y: 0, z: 0}
-  enemyPokemon: {fileID: 0}
   player: {fileID: 0}
   enemy: {fileID: 0}
-  playerPokemon: {fileID: 0}
   healthBar: {fileID: 6689669488656161136, guid: 23a247272133b2a4fb5a9c159c4d221e, type: 3}
+  canvas: {fileID: 0}
+  deathUI: {fileID: 9176117662251675809, guid: f2916b1de3411a0499cf49d45f9bcc35, type: 3}
+  paused: 0
+  cooldownTimerPrefab: {fileID: 6689669488656161136, guid: 62051a90ae7532e47b855cdaf9de5acf, type: 3}
 --- !u!4 &1242870649
 Transform:
   m_ObjectHideFlags: 0

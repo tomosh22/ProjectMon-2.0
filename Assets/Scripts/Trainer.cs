@@ -15,12 +15,23 @@ public class Trainer : MonoBehaviour
     private int index;
     private TMP_Text textComponent;
     List<string> speech;
+    public Material readyMat;
+    public Material beatenMat;
+    public bool beaten;
+    public bool waitForHitboxExit;
     // Start is called before the first frame update
     void Start()
     {
         gm = FindObjectOfType<GameManager>();
         tp = GetComponent<TrainerPokemon>();
         isActive = false;
+        foreach (int id in gm.beatenTrainerIDs) {
+            if (id == trainerID) {
+                beaten = true;
+                GetComponent<Renderer>().material = beatenMat;
+                return;
+            }
+        }
         Func<Pokemon> pokemonCreator;
         Pokemon.InstanceCreators.TryGetValue(tp.pokemonName, out pokemonCreator);
         trainerPokemon = pokemonCreator();
@@ -30,6 +41,7 @@ public class Trainer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (beaten) { return; }
         if (isActive && Input.GetKeyDown(KeyCode.Return)) {
             index++;
             if (index < speech.Count)
@@ -39,6 +51,9 @@ public class Trainer : MonoBehaviour
             else {
                 gm.PrepareToExitOverworld();
                 Debug.Log("in trainer.cs level = " + trainerPokemon.level.ToString() + " and hp = " + trainerPokemon.hp.ToString());
+                gm.xpModifier = 1;
+                gm.currentTrainerID = trainerID;
+                
                 gm.LoadBattle(trainerPokemon);
 
             }
@@ -46,9 +61,10 @@ public class Trainer : MonoBehaviour
         }
     }
     private void OnTriggerEnter(Collider other) {
-        isActive = true;
+        if (beaten || waitForHitboxExit) { return; }
+        
         if (other.gameObject.CompareTag("Player")) {
-            
+            isActive = true;
             TrainerSpeeches.trainerSpeeches.TryGetValue(trainerID, out speech);
             Debug.Log("speech: " + speech[0]);
             gm.PrepareToExitOverworld();
@@ -64,5 +80,10 @@ public class Trainer : MonoBehaviour
             
             
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        waitForHitboxExit = false;
     }
 }
